@@ -44,9 +44,26 @@ class Network(Network_):
         index = choice(range(len(neuron.weights)))
         neuron.weights[index] = random() * 9
 
+    @staticmethod
+    def get_fusion_points(layers1: List[List[Neuron]], layers2: List[List[Neuron]]) -> List[Tuple[int, int]]:
+        fusion_points = []
+        for i, layer1 in enumerate(layers1[:-2]):
+            for n, layer2 in enumerate(layers2[:-2]):
+                if len(layer1) == len(layer2):
+                    fusion_points.append((i + 1, n + 1))
+        return fusion_points
 
-    def clone(self):
-        return Network([layer.copy() for layer in self.layers])
+    @staticmethod
+    def mate(net1: Network, net2: Network) -> Network:
+        fusion_points = Network.get_fusion_points(net1.layers, net2.layers)
+        if not fusion_points:
+            return Network(choice((net1.layers, net2.layers)))
+        fusion_point = choice(fusion_points)
+        if randint(0, 1) == 0:
+            net1, net2 = net2, net1
+            fusion_point = fusion_point[::-1]
+        layer = net1.layers[:fusion_point[0]] + net2.layers[fusion_point[1]:]
+        return Network(layer)
 
 
 def get_loss(nbr1, nbr2, sum_func):
