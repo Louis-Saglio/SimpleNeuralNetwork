@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from random import randint, random, choice
-from typing import List
+from typing import List, Tuple
 
 from neural_network import Network as Network_, Neuron
 
@@ -19,7 +19,7 @@ def get_random_nt(nbr=30) -> List[Network]:
         for layer_num in range(layer_number):
             last = layer_num == layer_number - 1
             layer = []
-            layer_size, old_layer_size = 1 if last else randint(1, 9), layer_size
+            layer_size, old_layer_size = 1 if last else randint(2, 9), layer_size
             for neuron_num in range(layer_size):
                 layer.append(Neuron(random() * 9, [random() * 9 for _ in range(old_layer_size)], activation_function))
             nt_structure.append(layer)
@@ -72,15 +72,22 @@ def get_loss(nbr1, nbr2, sum_func):
 
 def test():
     assert get_loss(2, 3, lambda x, y: x + y + 5) == 1
-    pop = get_random_nt()
-    for i in range(1000):
+    len_pop = 100
+    pop = get_random_nt(len_pop)
+    for i in range(10):
         for nt in pop:
-            if randint(0, 9) == 0:
+            if randint(0, 5) == 0:
                 nt.mutate()
             print(get_loss(5, -9, nt))
-        pop = sorted(pop, key=lambda x: get_loss(randint(0, 9), randint(0, 9), x))[15:]
-        pop += get_random_nt(15)
+        pop = sorted(pop, key=lambda x: get_loss(randint(0, 9), randint(0, 9), x))[:len_pop//2]
+        for i in range(len_pop//2):
+            new_net = Network.mate(choice(pop), choice(pop))
+            pop.append(new_net or get_random_nt(30)[0])
+    for net in pop:
+        print(net)
+    print(net.layers)
+    print(net.run((2, 2)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()
