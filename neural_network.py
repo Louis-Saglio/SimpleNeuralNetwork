@@ -42,14 +42,8 @@ def test():
 
     nt = Network(
         (
-            (
-                Neuron(0, (1, 2), lambda x: x),
-                Neuron(0, (2, 1), lambda x: x-1),
-                Neuron(0, (2, 1), lambda x: x-1),
-            ),
-            (
-                Neuron(1, (1, 2, 3), lambda x: 2*x),
-            )
+            (Neuron(0, (1, 2), lambda x: x), Neuron(0, (2, 1), lambda x: x - 1), Neuron(0, (2, 1), lambda x: x - 1)),
+            (Neuron(1, (1, 2, 3), lambda x: 2 * x),),
         )
     )
     print(nt.run((3, 4)))

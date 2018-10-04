@@ -35,8 +35,8 @@ class Network(Network_):
         string = []
         maxi = max([len(layer) for layer in self.layers])
         for i, layer in enumerate(self.layers):
-            string.append(str(i) + '  ' + ' ' * (maxi - len(layer)) + ' '.join(['o' for _ in range(len(layer))]))
-        return ('-' * maxi * 2) + '---\n' + '\n'.join(string)
+            string.append(str(i) + "  " + " " * (maxi - len(layer)) + " ".join(["o" for _ in range(len(layer))]))
+        return ("-" * maxi * 2) + "---\n" + "\n".join(string)
 
     def mutate(self):
         layer = choice(self.layers)
@@ -62,7 +62,7 @@ class Network(Network_):
         if randint(0, 1) == 0:
             net1, net2 = net2, net1
             fusion_point = fusion_point[::-1]
-        layer = net1.layers[:fusion_point[0]] + net2.layers[fusion_point[1]:]
+        layer = net1.layers[: fusion_point[0]] + net2.layers[fusion_point[1] :]
         return Network(layer)
 
 
@@ -79,8 +79,8 @@ def test():
             if randint(0, 5) == 0:
                 nt.mutate()
             print(get_loss(5, -9, nt))
-        pop = sorted(pop, key=lambda x: get_loss(randint(0, 9), randint(0, 9), x))[:len_pop//2]
-        for i in range(len_pop//2):
+        pop = sorted(pop, key=lambda x: get_loss(randint(0, 9), randint(0, 9), x))[: len_pop // 2]
+        for _ in range(len_pop // 2):
             new_net = Network.mate(choice(pop), choice(pop))
             pop.append(new_net or get_random_nt(30)[0])
     for net in pop:
