@@ -31,15 +31,12 @@ class Network(Network_):
     def __call__(self, nbr1, nbr2):
         return self.run((nbr1, nbr2))[0]
 
-    def remove_layer(self):
-        for i in range(len(self.layers) - 1):
-            print(len(self.layers[i]), len(self.layers[i + 1]))
-            if len(self.layers[i]) == len(self.layers[i+1]):
-                print(self.layers[i], self.layers[i + 1])
-                break
-        else:
-            return
-        self.layers.remove(self.layers[i])
+    def __repr__(self):
+        string = []
+        maxi = max([len(layer) for layer in self.layers])
+        for i, layer in enumerate(self.layers):
+            string.append(str(i) + '  ' + ' ' * (maxi - len(layer)) + ' '.join(['o' for _ in range(len(layer))]))
+        return ('-' * maxi * 2) + '---\n' + '\n'.join(string)
 
     def mutate(self):
         layer = choice(self.layers)
