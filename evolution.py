@@ -10,7 +10,7 @@ def activation_function(x):
     return x
 
 
-def get_random_nt(nbr=30) -> List[Network]:
+def get_random_nt(nbr: int = 30) -> List[Network]:
     networks = []
     for i in range(nbr):
         layer_number = randint(1, 9)
