@@ -1,13 +1,13 @@
 from random import randint
 from statistics import mean
 
-from evolution import get_random_nt
+from evolution import get_random_neural_network
 
 gen_nbr = 2000
 
 # generate
 pop_size = 200
-nts = get_random_nt(pop_size)
+nts = get_random_neural_network(pop_size)
 
 
 def evaluate(nt, nbr=10):
@@ -33,5 +33,6 @@ for _ in range(gen_nbr):
         scores = [evaluate(nt) for nt in nts]
         print(round(mean(scores), 2), round(min(scores), 2))
     except:
-        if input("Continue ? (y/n)") == 'n':
+        # data corruption may happen
+        if input("Continue ? (y/n)") == "n":
             break
