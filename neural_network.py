@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Union, Callable, Collection, List
 
 Number = Union[int, float]
@@ -33,6 +34,9 @@ class Network:
 
     def __repr__(self):
         return repr(self.layers)
+
+    def copy(self):
+        return self.__class__(deepcopy(self.layers))
 
 
 def test():

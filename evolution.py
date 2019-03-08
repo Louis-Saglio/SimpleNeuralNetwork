@@ -21,7 +21,7 @@ def get_random_nt(nbr: int = 30) -> List[Network]:
             layer = []
             layer_size, old_layer_size = 1 if last else randint(2, 9), layer_size
             for neuron_num in range(layer_size):
-                layer.append(Neuron(random() * 9, [random() * 9 for _ in range(old_layer_size)], activation_function))
+                layer.append(Neuron(random(), [random() for _ in range(old_layer_size)], activation_function))
             nt_structure.append(layer)
         networks.append(Network(nt_structure))
     return networks
