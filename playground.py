@@ -10,14 +10,14 @@ pop_size = 200
 nts = get_random_nt(pop_size)
 
 
-def evaluate(nt):
+def evaluate(nt, nbr=10):
     total = 0
-    for _ in range(10):
+    for _ in range(nbr):
         a = randint(0, 100)
         b = randint(0, 100)
         c = a + b
         total += abs(nt.run((a, b))[0] - c)
-    return total
+    return total / nbr
 
 
 for _ in range(gen_nbr):
