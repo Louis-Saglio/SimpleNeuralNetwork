@@ -1,7 +1,6 @@
 """
 Genetic algorithm layer built on the top of the neural_network module
 in order to adapt NeuralNetwork instances into individuals of a population of a genetic algorithm
-Currently it supports only NN with 2 inputs and 1 output
 """
 
 
@@ -17,38 +16,44 @@ def default_activation_function(x):
     return x
 
 
-def get_random_neural_network(nbr: int = 30) -> List[Individual]:
+def get_random_neural_network_population(
+    nbr: int = 30, input_layer_size=2, output_layer_size=1, activation_function=default_activation_function
+) -> List[Individual]:
     """
     Returns a list of <nbr> randomly set up Individual instances
     supporting an input of size 2 and giving an output of size 1
     """
-    networks = []
+    population = []
     for i in range(nbr):
         layer_number = randint(1, 9)
-        nt_structure = []
-        layer_size = 2
+        layers = []
+        layer_size = input_layer_size
         for layer_num in range(layer_number):
-            last = layer_num == layer_number - 1
             layer = []
-            layer_size, old_layer_size = 1 if last else randint(2, 9), layer_size
+            layer_size, old_layer_size = (
+                output_layer_size if (layer_num == layer_number - 1) else randint(2, 9),
+                layer_size,
+            )
             for neuron_num in range(layer_size):
-                layer.append(
-                    Perceptron(random(), [random() for _ in range(old_layer_size)], default_activation_function)
-                )
-            nt_structure.append(layer)
-        networks.append(Individual(nt_structure))
-    return networks
+                layer.append(Perceptron(random(), [random() for _ in range(old_layer_size)], activation_function))
+            layers.append(layer)
+        population.append(Individual(layers))
+    return population
 
 
 class Individual(NeuralNetwork):
-    def __call__(self, nbr1, nbr2):
-        return self.run((nbr1, nbr2))[0]
+    def __call__(self, *args):
+        assert all(len(perceptron.weights) == len(args) for perceptron in self.layers[0])
+        return self.run(args)
 
     def mutate(self):
         layer = choice(self.layers)
-        neuron = choice(layer)
-        index = choice(range(len(neuron.weights)))
-        neuron.weights[index] = random() * 9
+        perceptron = choice(layer)
+        if randint(0, 50) == 0:
+            perceptron.bias = random() * 9
+        else:
+            index = choice(range(len(perceptron.weights)))
+            perceptron.weights[index] = random() * 9
 
     @staticmethod
     def get_fusion_points(layers1: List[List[Perceptron]], layers2: List[List[Perceptron]]) -> List[Tuple[int, int]]:
@@ -79,7 +84,7 @@ def get_loss(nbr1, nbr2, sum_func):
 def test():
     assert get_loss(2, 3, lambda x, y: x + y + 5) == 1
     len_pop = 100
-    pop = get_random_neural_network(len_pop)
+    pop = get_random_neural_network_population(len_pop)
     for i in range(10):
         for nt in pop:
             if randint(0, 5) == 0:
@@ -88,12 +93,16 @@ def test():
         pop = sorted(pop, key=lambda x: get_loss(randint(0, 9), randint(0, 9), x))[: len_pop // 2]
         for _ in range(len_pop // 2):
             new_net = Individual.mate(choice(pop), choice(pop))
-            pop.append(new_net or get_random_neural_network(30)[0])
+            pop.append(new_net or get_random_neural_network_population(30)[0])
     for net in pop:
         print(net)
+    # noinspection PyUnboundLocalVariable
     print(repr(net))
     print(net.run((2, 2)))
 
 
 if __name__ == "__main__":
-    test()
+    a, b = get_random_neural_network_population(2, 5, 3)
+    print(a)
+    print(b)
+    print(a(1, 2, 0, -8, 5))
