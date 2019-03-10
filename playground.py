@@ -1,38 +1,32 @@
 from random import randint
 from statistics import mean
 
-from evolution import get_random_neural_network
+from evaluation import evaluate_sum, evaluate_sqrt
+from evolution import get_random_neural_network_population
 
 gen_nbr = 2000
 
 # generate
-pop_size = 200
-nts = get_random_neural_network(pop_size)
+pop_size = 2000
+population = get_random_neural_network_population(pop_size, 1, 1, lambda x: x)
 
 
-def evaluate(nt, nbr=10):
-    total = 0
-    for _ in range(nbr):
-        a = randint(0, 100)
-        b = randint(0, 100)
-        c = a + b
-        total += abs(nt.run((a, b))[0] - c)
-    return total / nbr
-
+evaluate = evaluate_sqrt
 
 for _ in range(gen_nbr):
     try:
         # select
-        nts = nts[: pop_size // 2]
-        nts += [nt.copy() for nt in nts]
+        population = population[: pop_size // 2]
+        population += [individual.copy() for individual in population]
         # mutate
-        [nt.mutate() for nt in nts if randint(0, 100) == 0]
+        [individual.mutate() for individual in population if randint(0, 100) == 0]
         # sort
-        nts = sorted(nts, key=lambda nt: evaluate(nt))
+        population = sorted(population, key=lambda individual: evaluate(individual))
 
-        scores = [evaluate(nt) for nt in nts]
+        scores = [evaluate(individual) for individual in population]
         print(round(mean(scores), 2), round(min(scores), 2))
-    except:
+    except Exception as e:
+        print(e)
         # data corruption may happen
         if input("Continue ? (y/n)") == "n":
             break
