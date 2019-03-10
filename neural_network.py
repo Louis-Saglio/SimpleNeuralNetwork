@@ -46,8 +46,14 @@ class NeuralNetwork:
         string = []
         maxi = max([len(layer) for layer in self.layers])
         for i, layer in enumerate(self.layers):
-            string.append(str(i) + "  " + " " * (maxi - len(layer)) + " ".join(["o" for _ in range(len(layer))]))
-        return ("-" * maxi * 2) + "---\n" + "\n".join(string)
+            string.append(
+                str(i)
+                + f" {len(layer)}"
+                + "  "
+                + " " * (maxi - len(layer))
+                + " ".join(["o" for _ in range(len(layer))])
+            )
+        return ("-" * maxi * 2) + "-----\n" + "\n".join(string)
 
     def copy(self):
         return self.__class__(deepcopy(self.layers))
