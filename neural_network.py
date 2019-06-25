@@ -1,5 +1,5 @@
 """
-Data structures to emulate simple feed forward neural networks
+Data structures to emulate simple feed forward & layer based neural networks
 """
 
 

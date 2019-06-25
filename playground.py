@@ -1,3 +1,5 @@
+import dill as pickle
+import time
 from random import randint
 from statistics import mean
 
@@ -17,8 +19,11 @@ evaluate = evaluate_sum
 avg_list = []
 best_list = []
 
+population_history = []
+
 for _ in range(gen_nbr):
     try:
+        population_history.append(population)
         # select
         population = population[: pop_size // 2]
         population += [individual.copy() for individual in population]
@@ -29,7 +34,7 @@ for _ in range(gen_nbr):
 
         scores = [evaluate(individual) for individual in population]
         avg = round(mean(scores), 2)
-        best = round(min(scores), 2)
+        best = round(scores[0], 2)
         # print(avg, best)
         avg_list.append(avg)
         best_list.append(best)
@@ -40,7 +45,12 @@ for _ in range(gen_nbr):
             break
 
 plt.plot(avg_list[10:])
+plt.title("Moyenne")
 plt.show()
 
 plt.plot(best_list)
+plt.title("Best")
 plt.show()
+
+with open(f"saved_{int(time.time())}", "wb") as f:
+    pickle.dump(population_history, f)

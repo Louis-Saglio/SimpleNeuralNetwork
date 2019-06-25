@@ -1,10 +1,8 @@
 """
-Genetic algorithm layer built on the top of the neural_network module
+Genetic algorithm layer built on top of the neural_network module
 in order to adapt NeuralNetwork instances into individuals of a population of a genetic algorithm
 """
 
-
-from __future__ import annotations
 
 from random import randint, random, choice
 from typing import List, Tuple
@@ -18,7 +16,7 @@ def default_activation_function(x):
 
 def get_random_neural_network_population(
     nbr: int = 30, input_layer_size=2, output_layer_size=1, activation_function=default_activation_function
-) -> List[Individual]:
+) -> List["Individual"]:
     """
     Returns a list of <nbr> randomly set up Individual instances
     supporting an input of size 2 and giving an output of size 1
@@ -65,7 +63,7 @@ class Individual(NeuralNetwork):
         return fusion_points
 
     @staticmethod
-    def mate(net1: Individual, net2: Individual) -> Individual:
+    def mate(net1: "Individual", net2: "Individual") -> "Individual":
         fusion_points = Individual.get_fusion_points(net1.layers, net2.layers)
         if not fusion_points:
             return Individual(choice((net1.layers, net2.layers)))
