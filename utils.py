@@ -27,3 +27,11 @@ def obj_to_json(data):
 
 def rpprint(data):
     print(obj_to_json(data))
+
+
+def batch(iterable, n=1):
+    # credits :
+    # https://stackoverflow.com/questions/8290397/how-to-split-an-iterable-in-constant-size-chunks#answer-8290508
+    size = len(iterable)
+    for ndx in range(0, size, n):
+        yield iterable[ndx:min(ndx + n, size)]

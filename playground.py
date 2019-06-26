@@ -7,11 +7,13 @@ from evaluation import evaluate_sum, evaluate_sqrt, evaluate_and, evaluate_is_di
 from evolution import get_random_neural_network_population
 from matplotlib import pyplot as plt
 
-gen_nbr = 100
+from utils import batch
+
+gen_nbr = 1000
 
 # generate
 pop_size = 2000
-population = get_random_neural_network_population(pop_size, 2, 1, lambda x: x)
+population = get_random_neural_network_population(pop_size, 2, 1)
 
 
 evaluate = evaluate_sum
@@ -44,13 +46,13 @@ for _ in range(gen_nbr):
         if input("Continue ? (y/n)") == "n":
             break
 
-plt.plot(avg_list[10:])
+plt.plot([mean(data) for data in batch(avg_list[10:], 20)])
 plt.title("Moyenne")
 plt.show()
 
-plt.plot(best_list)
+plt.plot([mean(data) for data in batch(best_list, 10)])
 plt.title("Best")
 plt.show()
 
-with open(f"saved_{int(time.time())}", "wb") as f:
-    pickle.dump(population_history, f)
+# with open(f"saved_{int(time.time())}", "wb") as f:
+#     pickle.dump(population_history, f)

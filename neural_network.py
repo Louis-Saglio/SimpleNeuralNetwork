@@ -12,19 +12,20 @@ Number = Union[int, float]
 
 
 class Perceptron:
-    def __init__(self, bias: Number, weights: Collection[Number], activation_function: Callable[[Number], Number]):
-        self.activation_function = activation_function
+    def __init__(self, bias: Number, weights: Collection[Number]):
         self.bias = bias
         self.weights = weights
 
+    @property
+    def id(self):
+        return id((self.bias, self.weights))
+
     def run(self, inputs: Collection[Number]) -> Number:
         assert len(inputs) == len(self.weights), (inputs, self.weights)
-        return self.activation_function(
-            sum([input_ * weight for input_, weight in zip(inputs, self.weights)]) + self.bias
-        )
+        return sum([input_ * weight for input_, weight in zip(inputs, self.weights)]) + self.bias
 
     def __repr__(self):
-        return f"Perceptron{{weights : {self.weights}, bias : {self.bias}, activation : {self.activation_function}}}"
+        return f"Perceptron{{weights : {self.weights}, bias : {self.bias}}}"
 
 
 class NeuralNetwork:
@@ -60,18 +61,18 @@ class NeuralNetwork:
 
 
 def test():
-    n = Perceptron(5, (2, 3, 6), lambda x: x * 2)
+    n = Perceptron(5, (2, 3, 6))
     nbr = n.run((1, 2, 3))
-    assert nbr == 62, nbr
+    assert nbr == 31, nbr
 
     nt = NeuralNetwork(
         (
             (
-                Perceptron(0, (1, 2), lambda x: x),
-                Perceptron(0, (2, 1), lambda x: x - 1),
-                Perceptron(0, (2, 1), lambda x: x - 1),
+                Perceptron(0, (1, 2)),
+                Perceptron(0, (2, 1)),
+                Perceptron(0, (2, 1)),
             ),
-            (Perceptron(1, (1, 2, 3), lambda x: 2 * x),),
+            (Perceptron(1, (1, 2, 3)),),
         )
     )
     print(nt.run((3, 4)))

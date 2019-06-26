@@ -1,3 +1,9 @@
+"""
+Collection of functions designed to evaluate individuals performance on a specific task
+Each function must have one positional argument which is the individual to evaluate
+"""
+
+
 from math import sqrt
 from random import randint
 
