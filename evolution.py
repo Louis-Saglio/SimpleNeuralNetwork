@@ -10,9 +10,7 @@ from typing import List, Tuple, Collection
 from neural_network import NeuralNetwork, Perceptron
 
 
-def get_random_neural_network_population(
-    nbr: int = 30, input_layer_size=2, output_layer_size=1
-) -> List["Individual"]:
+def get_random_neural_network_population(nbr: int = 30, input_layer_size=2, output_layer_size=1) -> List["Individual"]:
     """
     Returns a list of <nbr> randomly set up Individual instances
     supporting an input of size 2 and giving an output of size 1
@@ -41,9 +39,11 @@ class Individual(NeuralNetwork):
         self.species_id = self._compute_species_id()
 
     def _compute_species_id(self):
-        return (
-            tuple(len(layer) for layer in self.layers),
-            tuple(tuple(perceptron.id for perceptron in layer) for layer in self.layers),
+        return hash(
+            (
+                tuple(len(layer) for layer in self.layers),
+                tuple(tuple(perceptron.id for perceptron in layer) for layer in self.layers),
+            )
         )
 
     def __call__(self, *args):
@@ -59,6 +59,9 @@ class Individual(NeuralNetwork):
             index = choice(range(len(perceptron.weights)))
             perceptron.weights[index] = random() * 9
         self.species_id = self._compute_species_id()
+
+    def __str__(self):
+        return f"{super(Individual, self).__str__()}\n{self.run((-50, 50))}\n{self.species_id}"
 
     @staticmethod
     def get_fusion_points(layers1: List[List[Perceptron]], layers2: List[List[Perceptron]]) -> List[Tuple[int, int]]:
@@ -112,18 +115,8 @@ def test_species_id():
     perceptron2 = Perceptron(0, (2, 1))
     perceptron3 = Perceptron(0, (2, 1))
     perceptron4 = Perceptron(1, (1, 2, 3))
-    individual = Individual(
-        (
-            (
-                perceptron1,
-                perceptron2,
-                perceptron3,
-            ),
-            (perceptron4,),
-        )
-    )
-    print(individual.species_id)
-    assert individual.species_id == (2, (3, 1), ((perceptron1.id, perceptron2.id, perceptron3.id), (perceptron4.id,))), (2, (3, 1), ((perceptron1.id, perceptron2.id, perceptron3.id), perceptron4.id))
+    individual = Individual(((perceptron1, perceptron2, perceptron3), (perceptron4,)))
+    assert individual.species_id == ((3, 1), ((perceptron1.id, perceptron2.id, perceptron3.id), (perceptron4.id,)))
 
 
 if __name__ == "__main__":
