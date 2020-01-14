@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import os
 from random import choices, random
 from typing import Union, Callable, List
 
@@ -47,14 +48,14 @@ class Network:
     def init_perceptrons(nbr: int) -> List[Perceptron]:
         perceptrons = []
         for _ in range(nbr):
-            perceptrons.append(Perceptron(sigmoid, []))
+            perceptrons.append(Perceptron(lambda x: x, []))
         for perceptron in perceptrons:
-            for new_input in [p for p in choices(perceptrons, k=5) if p is not perceptron]:
+            for new_input in [p for p in choices(perceptrons, k=8) if p is not perceptron]:
                 perceptron.add_as_input(new_input)
         return perceptrons
 
     def __init__(self):
-        self.perceptrons = self.init_perceptrons(10)
+        self.perceptrons = self.init_perceptrons(5)
 
     def feedforward(self):
         for perceptron in self.perceptrons:
@@ -62,8 +63,21 @@ class Network:
         for perceptron in self.perceptrons:
             perceptron.update()
 
+    def write_as_graphviz(self) -> str:
+        text = ["digraph {"]
+        for perceptron in self.perceptrons:
+            text.append(f'{perceptron.id} [label="{round(perceptron.current_value, 2)}"]')
+            for input_, weight in zip(perceptron.inputs, perceptron.weights):
+                text.append(f'"{input_.id}" -> "{perceptron.id}" [label="{round(weight, 2)}"]')
+        text.append("}")
+        return "\n".join(text)
+
 
 if __name__ == "__main__":
     network = Network()
     while True:
         network.feedforward()
+        with open("nn.dot", "w") as f:
+            f.write(network.write_as_graphviz())
+        os.system("dot -Tpng nn.dot -o neural_network.png")
+        input(">>>")
