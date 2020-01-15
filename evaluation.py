@@ -1,3 +1,9 @@
+"""
+Collection of functions designed to evaluate individuals performance on a specific task
+Each function must have one positional argument which is the individual to evaluate
+"""
+
+
 from math import sqrt
 from random import randint
 
@@ -41,4 +47,14 @@ def evaluate_is_divisible_by(individual, divider=10, nbr=100):
         c = a % divider == 0
         if (round(individual(a)[0]) % 2 == 0) is c:
             total += 1
+    return total / nbr
+
+
+def evaluate_multiplication(individual, nbr=10):
+    total = 0
+    for _ in range(nbr):
+        a = randint(-100, 100)
+        b = randint(-100, 100)
+        c = a * b
+        total += abs(c - individual(a, b)[0])
     return total / nbr
